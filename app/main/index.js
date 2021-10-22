@@ -1,12 +1,12 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
-// const { create: createMainWindow } = require('./windows/main')
-const { create: createControlWindow } = require('./windows/control')
+const { create: createMainWindow } = require('./windows/main')
+// const { create: createControlWindow } = require('./windows/control')
 
 const handleIPC = require('./ipc')
 
 app.on('ready', () => {
-  createControlWindow()
+  createMainWindow()
   handleIPC()
   require('./robot.js')()
 })

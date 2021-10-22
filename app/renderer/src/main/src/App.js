@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
+import './peer-puppet'
 const { ipcRenderer } = window.require('electron')
 
 function App () {

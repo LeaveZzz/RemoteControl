@@ -1,35 +1,41 @@
 const EventsEmitter = require('events')
 const peer = new EventsEmitter()
-const { desktopCapturer, ipcRenderer } = require('electron')
-async function getScreenStream () {
-  const sources = await desktopCapturer.getSources({ types: ['screen'] })
+// const { ipcRenderer } = require('electron')
 
-  navigator.webkitGetUserMedia({
-    audio: false,
-    video: {
-      mandatory: {
-        chromeMediaSource: 'desktop',
-        chromeMediaSourceId: sources[0].id,
-        maxWidth: window.screen.width,
-        maxHeight: window.screen.height
-      }
-    }
-  }, stream => {
-    peer.emit('add-stream', stream)
-  }, err => { })
+// peer.on('robot', (type, data) => {
+//   console.log('peer:robot',type, data)
+//   if (type == 'mouse') {
+//     data.screen = {
+//       width: window.screen.width,
+//       height: window.screen.height
+//     }
+//   }
+//   ipcRenderer.send('robot', type, data)
+// })
+
+const pc = new window.RTCPeerConnection({})
+
+async function createOffer () {
+  const offer = await pc.createOffer({
+    offerToReceiveAudio: false,
+    offerToReceiveVideo: true
+  })
+  await pc.setLocalDescription(offer)
+  console.log('pc_offer', JSON.stringify(offer))
+  return pc.localDescription
+}
+createOffer()
+
+async function setRemote (offer) {
+  await pc.setRemoteDescription(offer)
 }
 
-getScreenStream()
+window.setRemote = setRemote
 
-peer.on('robot', (type, data) => {
-  console.log('peer:robot',type, data)
-  if (type == 'mouse') {
-    data.screen = {
-      width: window.screen.width,
-      height: window.screen.height
-    }
-  }
-  ipcRenderer.send('robot', type, data)
-})
+pc.onaddstream = e => {
+  console.log('add_stream', e.stream)
+  peer.emit('add-stream', e.stream)
+}
+
 
 module.exports = peer
