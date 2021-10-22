@@ -8,7 +8,7 @@ const handleIPC = require('./ipc')
 app.on('ready', () => {
   createControlWindow()
   handleIPC()
-  require('./robot.js')
+  require('./robot.js')()
 })
 
 app.on('window-all-closed', () => {
