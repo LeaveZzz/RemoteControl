@@ -15,6 +15,24 @@ const peer = new EventsEmitter()
 
 const pc = new window.RTCPeerConnection({})
 
+pc.onicecandidate = e => {
+  console.log('candidate', JSON.stringify(e.candidate))
+}
+
+let candidates = []
+async function addIceCandidate (candidate) {
+  if (candidate) {
+    candidates.push(candidate)
+  }
+  if (pc.remoteDescription && pc.remoteDescription.type) {
+    for (let i = 0; i < candidates.length; i++) {
+      await pc.addIceCandidate(new RTCIceCandidate(candidates[i]))
+    }
+    candidates = []
+  }
+}
+window.addIceCandidate = addIceCandidate
+
 async function createOffer () {
   const offer = await pc.createOffer({
     offerToReceiveAudio: false,
