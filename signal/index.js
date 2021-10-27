@@ -15,8 +15,7 @@ wss.on('connection', (ws, request) => {
   }
   console.log('已連接')
   ws.on('message', message => {
-    console.log('incoming', message)
-    //{event,data}
+    // {event,data}
     let parseMessage = {}
     try {
       parseMessage = JSON.parse(message)
