@@ -24,6 +24,11 @@ function create () {
   win.webContents.openDevTools()
 }
 
+function send (channel, ...arg) {
+  win.webContents.send(channel, ...arg)
+}
+
 module.exports = {
-  create
+  create,
+  send
 }

@@ -1,3 +1,4 @@
+const { ipcRenderer } = window.require('electron')
 const EventsEmitter = require('events')
 const peer = new EventsEmitter()
 // const { ipcRenderer } = require('electron')
@@ -17,7 +18,14 @@ const pc = new window.RTCPeerConnection({})
 
 pc.onicecandidate = e => {
   console.log('candidate', JSON.stringify(e.candidate))
+  if (e.candidate) {
+    ipcRenderer.send('forward', 'control-candidate', JSON.stringify(e.candidate))
+  }
 }
+
+ipcRenderer.on('candidate', (e, candidate) => {
+  addIceCandidate(candidate)
+})
 
 let candidates = []
 async function addIceCandidate (candidate) {
@@ -31,7 +39,6 @@ async function addIceCandidate (candidate) {
     candidates = []
   }
 }
-window.addIceCandidate = addIceCandidate
 
 async function createOffer () {
   const offer = await pc.createOffer({
@@ -42,18 +49,21 @@ async function createOffer () {
   console.log('pc_offer', JSON.stringify(offer))
   return pc.localDescription
 }
-createOffer()
+createOffer().then(offer => {
+  ipcRenderer.send('forward', 'offer', { type: offer.type, sdp: offer.sdp })
+})
 
 async function setRemote (offer) {
   await pc.setRemoteDescription(offer)
 }
 
-window.setRemote = setRemote
+ipcRenderer.on('answer', (e, answer) => {
+  setRemote(answer)
+})
 
 pc.onaddstream = e => {
   console.log('add_stream', e.stream)
   peer.emit('add-stream', e.stream)
 }
-
 
 module.exports = peer
