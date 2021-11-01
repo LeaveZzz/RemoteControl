@@ -25,6 +25,7 @@ wss.on('connection', (ws, request) => {
       return
     }
     let { event, data } = parseMessage
+    console.log(parseMessage)
     if (event == 'login') {
       ws.sendData('logined', { code })
     } else if (event === 'control') {
