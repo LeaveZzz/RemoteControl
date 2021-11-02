@@ -13,7 +13,7 @@ wss.on('connection', (ws, request) => {
   ws.sendError = msg => {
     ws.sendData('error', { msg })
   }
-  console.log('已連接')
+  console.log(`${code}已连接`)
   ws.on('message', message => {
     // {event,data}
     let parseMessage = {}
@@ -35,7 +35,7 @@ wss.on('connection', (ws, request) => {
         ws.sendRemote = code2ws.get(remote).sendData
         code2ws.get(remote).sendRemote = ws.sendData
         ws.sendRemote('be-controled', { remote: code })
-        console.log('current-code:', { code, ws }, 'remote-code:', { remote, ws:code2ws.get(remote) })
+        console.log('current-code:', { code, ws }, 'remote-code:', { remote, ws: code2ws.get(remote) })
       }
     } else if (event === 'forward') {
       // data = {event, data}
