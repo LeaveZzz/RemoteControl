@@ -1,5 +1,7 @@
 const { WebSocketServer } = require('ws')
-const wss = new WebSocketServer({ port: 8010 })
+const wss = new WebSocketServer({ port: 8010 }, () => {
+  console.log('8010端口监听成功')
+})
 
 const code2ws = new Map()
 
