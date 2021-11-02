@@ -15,6 +15,21 @@ const peer = new EventsEmitter()
 // })
 
 const pc = new window.RTCPeerConnection({})
+const dc = pc.createDataChannel('robotchannel', { reliable: false })
+
+dc.onopen = () => {
+  peer.on('robot', (type, data) => {
+    dc.send(JSON.stringify({ type, data }))
+  })
+}
+
+dc.onmessage = e => {
+  console.log('message', e)
+}
+
+dc.onerror = e => {
+  console.log('error', e)
+}
 
 pc.onicecandidate = e => {
   console.log('candidate', JSON.stringify(e.candidate))

@@ -1,6 +1,5 @@
 const WebSocket = require('ws')
 const EventEmitter = require('events')
-const { sign } = require('crypto')
 const signal = new EventEmitter()
 
 const ws = new WebSocket('ws://127.0.0.1:8010')
