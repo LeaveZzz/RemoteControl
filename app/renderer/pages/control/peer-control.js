@@ -23,14 +23,14 @@ pc.onicecandidate = e => {
   }
 }
 
-ipcRenderer.on('candidate', (e, candidate) => {
+ipcRenderer.on('puppet-candidate', (e, candidate) => {
   addIceCandidate(candidate)
 })
 
 let candidates = []
 async function addIceCandidate (candidate) {
   if (candidate) {
-    candidates.push(candidate)
+    candidates.push(JSON.parse(candidate))
   }
   if (pc.remoteDescription && pc.remoteDescription.type) {
     for (let i = 0; i < candidates.length; i++) {
