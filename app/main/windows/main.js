@@ -13,7 +13,7 @@ function create () {
       contextIsolation: false,
       enableRemoteModule: true
     },
-    title: 'LEAVE-MAIN',
+    title: 'LEAVE-MAIN'
   })
 
   if (isDev) {
